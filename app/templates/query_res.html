@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="color: #4285f4">提示:</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="../static/loading.gif" style="position: relative;left: 30%"/>
+                    <h4 style="text-align: center">请勿关闭当前页面！正在处理中&hellip;</h4>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <br><br>
+    <div class="container" id="content" style="width: 90%;">
+        <div class="page-header">
+            <p style="text-align:center">
+            <h2>检索结果：<small>{{ sum }}</small></h2>
+            </p>
+        </div>
+
+        <form action="/submit" method="post">
+            <div class="table-responsive">
+                <div>
+                    <button type="button" class="btn btn-primary" id="submit">提交已选的文献</button>
+                    <font style="color: #ea4335;position: relative;left: 10px;">提示：选择需要的文章，提交后获取下载链接。</font>
+                </div>
+                <table class="table table-bordered table-hover table-condense"
+                       data-toggle="table"
+                       data-classes="table table-hover"
+                       data-show-columns="true"
+                       data-striped="true"
+                       data-show-toggle="true"
+                       data-search="true"
+                       data-toolbar="#toolbar"
+                       data-height="900">
+                    <thead>
+                    <tr>
+                        <th data-checkbox="true"></th>
+                        <th>Num</th>
+                        <th data-sortable="true">Title</th>
+                        <th data-sortable="true">Year</th>
+                        <th>Doi</th>
+                        <th>Journal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for paper in papers %}
+                        <tr>
+                            <td scope="row">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="inlineCheckbox3" name="unique_id"
+                                           value="{{ paper['unique-id'] }}">
+                                </label>
+                            </td>
+                            <td>{{ loop.index }}</td>
+                            <td class="text-capitalize">{{ paper['title'] }}</td>
+                            <td>{{ paper['year'] }}</td>
+                            <td>{{ paper['doi'] }}</td>
+                            <td class="text-lowercase">{{ paper['journal'] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button id="btn" style="display: none;"></button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#submit').on('click', function (event) {
+            $('#btn').click();
+            $('#myModal').modal('show');
+        });
+    </script>
+{% endblock %}
+
+</body>
+
+
+</html>
