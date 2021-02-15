@@ -1,13 +1,15 @@
 import bibtexparser
 from bibtexparser.bparser import BibTexParser
 
-from customization import *
+from .customization import *
 
 
 def customizations(record):
     record = author(record)
     record = title(record)
     record = unique_id(record)
+    record = doi(record)
+    record = journal(record)
     return record
 
 
@@ -30,10 +32,7 @@ if __name__ == '__main__':
         bib_str = bib_file.read()
     entries = parse_bib_str(bib_str)
     print(len(entries))
-    for k, v in entries[0].items():
-        print('key:', k)
-        print('value:', v)
+    for i in entries:
+        print(i.keys())
         print('#' * 50)
-    # for i in entires:
-    #     print(i.keys())
-    #     print('#'*50)
+        input('press')

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Paper Downloader{% endblock %}
+
+{% block content %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="color: #4285f4">提示:</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="../static/loading.gif" style="position: relative;left: 30%"/>
+                    <h4 style="text-align: center">请勿关闭当前页面！正在检索中&hellip;</h4>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <br><br><br>
+    <div class="container" id="content">
+        <div class="page-header">
+            <p style="text-align:center">
+            <h1>文献下载服务</h1>
+            </p>
+        </div>
+    </div>
+
+    <div class="row" id="inputBar" style="margin:0 20%;">
+        {{ wtf.quick_form(form) }}
+        <br><br><br>
+        <div style="font-size: smaller;color: gray">
+            示例：TS=(stromatolite) AND PY=(2020)<br><br>
+            提示：
+            <br><br>
+            <table class="table">
+                <tr>
+                    <td>TS=主题</td>
+                    <td>TI=标题</td>
+                    <td>AI=作者识别号</td>
+                    <td>SO=出版物名称</td>
+                    <td>DO=DOI</td>
+                </tr>
+                <tr>
+                    <td>PY=出版年</td>
+                    <td>CF=会议</td>
+                    <td>AD=地址</td>
+                    <td>AB=摘要</td>
+                    <td>AK=作者关键字</td>
+                </tr>
+                <tr>
+                    <td>SA=街道地址</td>
+                    <td>CI=城市</td>
+                    <td>CU=国家/地区</td>
+                    <td>SU=研究方向</td>
+                    <td>ALL=所有字段</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <br><br>
+    {% for message in form.query.errors %}
+        <div class="alert alert-warning" role="alert">
+            Sorry!
+        </div>
+        <div class="alert alert-danger" role="alert">{{ error_msg }}</div>
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('#submit').on('click', function (event) {
+            $('#btn').click();
+            $('#myModal').modal('show');
+        })
+    </script>
+{% endblock %}

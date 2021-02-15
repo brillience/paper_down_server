@@ -3,9 +3,15 @@
 # @Time : 2021/1/28 16:57
 # @Author : ZhangXiaobo
 # @Software: PyCharm
-import os
+
+
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@127.0.0.1:3036/papers_server"
+    SECRET_KEY = 'TPmi4aLWRbyVq8zu9v82dWYW1'
+    BOOTSTRAP_SERVE_LOCAL = True
+    BOOTSTRAP_USE_MINIFIED = False
 
     @staticmethod
     def init_app(app):
@@ -14,7 +20,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = ''
+
 
 
 class TestingConfig(Config):

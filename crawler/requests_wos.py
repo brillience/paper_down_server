@@ -11,17 +11,15 @@ import time
 
 import requests
 from lxml import etree
-
-from settings import HEADERS
-
+from .settings import HEADERS
 
 class WosCrawler(object):
-    def __init__(self, query_str=None):
+    def __init__(self):
         """
         query 为检索式 ： TS  TI  AU 支持任意合法的检索式
         :param query_str:
         """
-        self.query_str = query_str
+        self.query_str = None
         self.sid = None
         self.qid = None
         # sid qid 是提交表单数据的必要信息
@@ -31,13 +29,14 @@ class WosCrawler(object):
         self.paper_num = 0
         self.entry_url = ''  # 结果入口链接
 
-    def query(self):
+    def query(self,query_str):
         """
         1、打开网页
         2、提交查询
         3、获取结果bibtext
         :return: bibtext
         """
+        self.query_str = query_str
         self._open_page()
         self._submit_query()
         self._get_bibtex()
@@ -104,9 +103,7 @@ class WosCrawler(object):
         # 提取qid
         qid_pattern = r'qid=(\d+)&'
         self.qid = re.search(qid_pattern, self.entry_url).group(1)
-        print('qid:', self.qid)
         self.paper_num = int(tree.xpath("//a[@id='hitCount']/text()")[0])
-        print('paper_num:', self.paper_num)
 
     def _get_bibtex(self):
 
@@ -120,7 +117,6 @@ class WosCrawler(object):
             start = (i - 1) * span + 1
             if end > self.paper_num:
                 end = self.paper_num
-            print('正在下载第 {} 到第 {} 条文献'.format(start, end))
             output_form = {
                 "selectedIds": "",
                 "displayCitedRefs": "true",
@@ -160,5 +156,5 @@ class WosCrawler(object):
             self.bibtext = self.bibtext + bibtext_temp
 
 if __name__ == '__main__':
-    crawler = WosCrawler(query_str='TS=stromatolite')
-    print(crawler.query())
+    crawler = WosCrawler()
+    print(crawler.query(query_str='TS=stromatolite'))
