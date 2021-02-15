@@ -15,7 +15,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     <br><br>
-    <div class="container" id="content" style="width: 90%;">
+    <div class="container" id="content" style="width: 80%;">
         <div class="page-header">
             <p style="text-align:center">
             <h2>检索结果：<small>{{ sum }}</small></h2>
@@ -36,25 +36,27 @@
                        data-show-toggle="true"
                        data-search="true"
                        data-toolbar="#toolbar"
-                       data-height="900">
+                       data-height="900"
+                       id="table"
+                >
                     <thead>
                     <tr>
-                        <th data-checkbox="true"></th>
-                        <th>Num</th>
-                        <th data-sortable="true">Title</th>
-                        <th data-sortable="true">Year</th>
-                        <th>Doi</th>
-                        <th>Journal</th>
+                        <th>
+                            <input type="checkbox" onclick="checkboxed('uniqueid')">
+                        </th>
+                        <th data-field="num">Num</th>
+                        <th data-field="title" data-sortable="true">Title</th>
+                        <th data-field="year" data-sortable="true">Year</th>
+                        <th data-field="doi">Doi</th>
+                        <th data-field="journal">Journal</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for paper in papers %}
                         <tr>
                             <td scope="row">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="inlineCheckbox3" name="unique_id"
-                                           value="{{ paper['unique-id'] }}">
-                                </label>
+                                <input type="checkbox" name="uniqueid"
+                                       value="{{ paper['unique-id'] }}">
                             </td>
                             <td>{{ loop.index }}</td>
                             <td class="text-capitalize">{{ paper['title'] }}</td>
@@ -77,6 +79,23 @@
             $('#btn').click();
             $('#myModal').modal('show');
         });
+
+        function checkboxed(objName) {
+            var objNameList = document.getElementsByName(objName);
+
+            if (null != objNameList) {
+
+                for (var i = 0; i < objNameList.length; i++) {
+                    if (objNameList[i].checked == "") {
+                        objNameList[i].checked = "checked";
+                    } else {
+                        objNameList[i].checked = "";
+                    }
+                }
+            }
+        }
+
+
     </script>
 {% endblock %}
 

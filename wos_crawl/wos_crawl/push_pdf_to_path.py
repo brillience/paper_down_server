@@ -13,6 +13,7 @@
 import os
 from model import get_engine, get_session
 from model.models import Papers
+from sqlalchemy import and_
 
 if __name__ == '__main__':
     pdf_list = os.listdir(r'/home/zxb/store/PDF')
@@ -25,3 +26,20 @@ if __name__ == '__main__':
         if paper.path is None:
             paper.path = '/static/PDF/' + pdf
             session.commit()
+
+    # 将web_url不为空，但是path为空的文献的web_url置为空，方便爬虫程序扫描到，重新爬取
+    paper_list = session.query(Papers).filter(and_(Papers.path==None,Papers.web_url!=None)).all()
+    for paper in paper_list:
+        paper.web_url = None
+        session.commit()
+
+    # 将失败的web_url纠正
+    paper_list = session.query(Papers).filter(Papers.web_url!=None).all()
+    for paper in paper_list:
+        if 'cyber' in paper.web_url:
+            paper.web_url = None
+            paper.path = None
+            session.commit()
+
+
+    session.close()

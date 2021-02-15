@@ -34,7 +34,7 @@ def unique_id(document):
 def doi(document):
     if 'doi' in document:
         if document['doi']:
-            document['doi'] = document['doi'].replace('\n', ' ').strip()
+            document['doi'] = document['doi'].replace('\n', ' ')
         else:
             document['doi'] = None
     else:
@@ -45,7 +45,7 @@ def doi(document):
 def journal(document):
     if 'journal' in document:
         if document['journal']:
-            document['journal'] = document['journal'].replace('\n', ' ').strip()
+            document['journal'] = document['journal'].replace('\n', ' ')
         else:
             document['journal'] = None
     else:

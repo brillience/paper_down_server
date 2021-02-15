@@ -7,7 +7,7 @@
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@127.0.0.1:3036/papers_server"
     SECRET_KEY = 'TPmi4aLWRbyVq8zu9v82dWYW1'
     BOOTSTRAP_SERVE_LOCAL = True

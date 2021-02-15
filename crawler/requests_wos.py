@@ -103,9 +103,7 @@ class WosCrawler(object):
         # 提取qid
         qid_pattern = r'qid=(\d+)&'
         self.qid = re.search(qid_pattern, self.entry_url).group(1)
-        print('qid:', self.qid)
         self.paper_num = int(tree.xpath("//a[@id='hitCount']/text()")[0])
-        print('paper_num:', self.paper_num)
 
     def _get_bibtex(self):
 
@@ -119,7 +117,6 @@ class WosCrawler(object):
             start = (i - 1) * span + 1
             if end > self.paper_num:
                 end = self.paper_num
-            print('正在下载第 {} 到第 {} 条文献'.format(start, end))
             output_form = {
                 "selectedIds": "",
                 "displayCitedRefs": "true",
