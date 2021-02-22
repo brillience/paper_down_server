@@ -51,7 +51,7 @@ def index():
 @main.route('/submit', methods=['POST'])
 def submit():
     """
-    1、查询数据库中是否存在该path；若不存在，调用scihub获取url；若存在path，将本地的path转为url的形式。
+    1、查询数据库中是否存在该path；若不存在，则返回失败的表格；若存在path，将本地的path转为url的形式。
     2、以字典的形式返回，客户端需要进行分页处理和打包下载
     :return:
     """
