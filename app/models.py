@@ -50,12 +50,12 @@ def push_bib_to_db(bib_papers: list):
     for element in bib_papers:
         try:
             paper = Papers(unique_id=element.get('unique-id').strip(),
-                           title=element.get('title').strip() if 'title' in element else None,
-                           authors=str(element.get('author').strip() if 'author' in element else None),
-                           year=element.get('year').strip() if 'year' in element else None,
-                           month=element.get('month').strip() if 'month' in element else None,
-                           journal=element.get('journal').strip().lower() if 'journal' in element else None,
-                           doi=element.get('doi').strip() if 'doi' in element else None,
+                           title=element.get('title') if 'title' in element else None,
+                           authors=str(element.get('author') if 'author' in element else None),
+                           year=element.get('year') if 'year' in element else None,
+                           month=element.get('month') if 'month' in element else None,
+                           journal=element.get('journal').lower() if 'journal' in element else None,
+                           doi=element.get('doi') if 'doi' in element else None,
                            document_type=element.get('ENTRYTYPE') if 'ENTRYTYPE' in element else None
                            )
             # 先判断数据库中没有该文章，然后再增加进入

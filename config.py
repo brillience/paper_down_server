@@ -4,11 +4,21 @@
 # @Author : ZhangXiaobo
 # @Software: PyCharm
 
+"""
+项目的配置文件，web配置信息和爬虫配置信息，在此设置
+"""
+
+# 爬虫pdf保存地址
+WOS_CRAWLER_FILES_STORE = r'/home/zxb/store/PDF'
+# web与爬虫相关数据库信息
+DB_PATH = "mysql+pymysql://root:123456@127.0.0.1:3036/papers_server"
+
 
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@127.0.0.1:3036/papers_server"
+    # 数据库信息
+    SQLALCHEMY_DATABASE_URI = DB_PATH
     SECRET_KEY = 'TPmi4aLWRbyVq8zu9v82dWYW1'
     BOOTSTRAP_SERVE_LOCAL = True
     BOOTSTRAP_USE_MINIFIED = False
@@ -20,7 +30,6 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-
 
 
 class TestingConfig(Config):

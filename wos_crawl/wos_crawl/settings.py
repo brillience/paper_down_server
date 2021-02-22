@@ -74,8 +74,15 @@ ITEM_PIPELINES = {
     'wos_crawl.pipelines.fileDown': 300,
     # 'wos_crawl.pipelines.WosCrawlPipeline': 400,
 }
-FILES_STORE = r'/home/zxb/store/PDF'
-MEDIA_ALLOW_REDIRECTS =True
+
+import sys
+
+sys.path.append('../')
+from config import WOS_CRAWLER_FILES_STORE
+
+FILES_STORE = WOS_CRAWLER_FILES_STORE
+
+MEDIA_ALLOW_REDIRECTS = True
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 # AUTOTHROTTLE_ENABLED = True

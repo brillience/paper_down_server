@@ -3,6 +3,10 @@
 # @Time : 2021/2/2 11:12
 # @Author : ZhangXiaobo
 # @Software: PyCharm
+import sys
+sys.path.append("../../")
+from config import DB_PATH
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -10,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 
-def get_engine(db_url="mysql+pymysql://root:123456@127.0.0.1:3036/papers_server", echo=False):
+def get_engine(db_url=DB_PATH, echo=False):
     """
     :param db_url: "mysql://user:password@localhost/mydatabase"
     :param echo:
