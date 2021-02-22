@@ -6,16 +6,18 @@
 import zipfile
 
 import os
+
 from flask import render_template, request, flash, send_from_directory, send_file
 from io import BytesIO
 
-from crawler.scihubCrawler import Crawler
+
 from . import main
 from .forms import QueryForm
 from ..models import Papers
 from ..models import push_bib_to_db
 
 os.path.join('...')
+
 
 
 # 输入检索式
@@ -60,9 +62,7 @@ def submit():
         url = None
         paper = Papers.query.filter_by(unique_id=unique_id_).first()
         if paper.path is None:
-            if paper.web_url is None:
-                paper.web_url = Crawler().query(paper.doi)
-                url = paper.web_url
+            pass
         else:
             # 注意path的格式需为httpid
             url = paper.path
@@ -87,7 +87,7 @@ def submit():
 # 文件下载
 @main.route("/download/<path:filename>")
 def downloader(filename):
-    return send_from_directory(r'/home/zxb/workspace/paper_down_server/app/static/PDF', filename,
+    return send_from_directory('./static/PDF', filename,
                                as_attachment=True)  # as_attachment=True 一定要写，不然会变成打开，而不是下载
     pass
 
@@ -95,13 +95,13 @@ def downloader(filename):
 # 打包下载
 @main.route('/downloadall', methods=['POST'])
 def download_all():
+    id_list = request.form.getlist('ids')
     memory_file = BytesIO()
     with zipfile.ZipFile(memory_file, 'a', zipfile.ZIP_DEFLATED) as zf:
-        id_list = request.form['ids']
-        pathes = ['/home/zxb/workspace/paper_down_server/app/static/PDF/' + id + '.pdf' for id in id_list]
+        pathes = [os.path.join(main.root_path,'app/static/PDF/') + id + '.pdf' for id in id_list]
         for path in pathes:
             with open(path, 'rb') as fp:
-                zf.writestr(path, fp.read())
+                zf.writestr(path.split('static')[-1], fp.read())
     memory_file.seek(0)
 
     return send_file(memory_file,
