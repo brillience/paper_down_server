@@ -4,11 +4,17 @@
 # @Author : ZhangXiaobo
 # @Software: PyCharm
 # 文献爬取
+"""
+scihub简易爬虫程序
+"""
 import requests
 from lxml import etree
 
 
 class Crawler(object):
+    """
+    从scihub网站爬取对应的文献
+    """
     def __init__(self):
         self.headers = {
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',

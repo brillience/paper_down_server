@@ -1,3 +1,8 @@
+"""
+用于bibtexparser实现自定义的内容
+写法格式固定，主要为字段对应的字符串的格式的修改
+"""
+
 def author(document):
     if 'author' in document:
         if document['author']:

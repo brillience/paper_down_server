@@ -5,21 +5,40 @@
 # @Software: PyCharm
 """
 采用requests对wos进行发起检索请求，抓取检索结果
+使用：
+    1、获取文章数量 get_papers_num
+    2、拿取检索结果 get_bibtex
 """
-import re
 import time
 
+import re
 import requests
 from lxml import etree
-from .settings import HEADERS
+
+HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+    'Connection': 'keep-alive'
+}
+
 
 class WosCrawler(object):
-    def __init__(self):
+    """
+    web of science爬虫
+    提交表单数据，拿到该网站后台的检索结果（也就是bibtex格式的文档）
+    """
+
+    def __init__(self, query_str: str):
         """
+        1、打开网页
+        2、提交检索式
         query 为检索式 ： TS  TI  AU 支持任意合法的检索式
         :param query_str:
         """
-        self.query_str = None
+
+        self.query_str = query_str
         self.sid = None
         self.qid = None
         # sid qid 是提交表单数据的必要信息
@@ -29,18 +48,8 @@ class WosCrawler(object):
         self.paper_num = 0
         self.entry_url = ''  # 结果入口链接
 
-    def query(self,query_str):
-        """
-        1、打开网页
-        2、提交查询
-        3、获取结果bibtext
-        :return: bibtext
-        """
-        self.query_str = query_str
         self._open_page()
         self._submit_query()
-        self._get_bibtex()
-        return self.bibtext
 
 
     def _open_page(self):
@@ -97,16 +106,23 @@ class WosCrawler(object):
         response = requests.post(url=adv_search_url, data=query_form, headers=HEADERS)
         tree = etree.HTML(response.text)
         # 提取结果入口的链接
-        self.entry_url = tree.xpath("//a[@id='hitCount']/@href")[0]
-        self.entry_url = 'http://apps.webofknowledge.com' + self.entry_url
-        # print('entry_url : ', self.entry_url)
-        # 提取qid
-        qid_pattern = r'qid=(\d+)&'
-        self.qid = re.search(qid_pattern, self.entry_url).group(1)
-        self.paper_num = int(tree.xpath("//a[@id='hitCount']/text()")[0])
+        # 当检索到为空时，没有链接入口
+        try:
+            self.entry_url = tree.xpath("//a[@id='hitCount']/@href")[0]
+            self.entry_url = 'http://apps.webofknowledge.com' + self.entry_url
+            qid_pattern = r'qid=(\d+)&'
+            self.qid = re.search(qid_pattern, self.entry_url).group(1)
+            self.paper_num = int(tree.xpath("//a[@id='hitCount']/text()")[0].replace(',', ''))
+        except:
+            self.paper_num=0
 
     def _get_bibtex(self):
-
+        """
+        获取bibtex格式的文档的内容
+        :return:
+        """
+        if self.paper_num==0:
+            return None
         response = requests.get(url=self.entry_url, headers=HEADERS)
         # 一次只能拿到500条结果
         span = 500
@@ -151,10 +167,24 @@ class WosCrawler(object):
             output_url = 'http://apps.webofknowledge.com//OutboundService.do?action=go&&'
             response = requests.post(url=output_url, data=output_form, headers=HEADERS)
             #  WoS的bibtex格式不规范，需要特别处理一下
-            bibtext_temp = response.text.replace('Early Access Date', 'Early-Access-Date').replace('Early Access Year','Early-Access-Year')
+            bibtext_temp = response.text.replace('Early Access Date', 'Early-Access-Date').replace('Early Access Year',
+                                                                                                   'Early-Access-Year')
             # 将结果整合
             self.bibtext = self.bibtext + bibtext_temp
 
+    def get_papers_num(self):
+        return self.paper_num
+
+    def get_bibtex(self):
+        self._get_bibtex()
+        return self.bibtext
+
 if __name__ == '__main__':
-    crawler = WosCrawler()
-    print(crawler.query(query_str='TS=stromatolite'))
+    crawler = WosCrawler(query_str='TS=(doiomite) AND PY=(2020)')
+    paper_nums = crawler.get_papers_num()
+    if paper_nums==0:
+        print('检索结果文章数目为0篇，请前往',crawler.base_url,'的高级检索中确定检索式！')
+    elif paper_nums<=1000:
+        print(crawler.get_bibtex())
+    else:
+        print('检索结果文章数目超出1000篇，请前往',crawler.base_url,'的高级检索中确定检索式！')

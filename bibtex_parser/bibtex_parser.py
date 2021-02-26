@@ -1,3 +1,7 @@
+"""
+bibtex格式的文献解析器
+详细：https://blog.csdn.net/qq_37607269/article/details/113267279
+"""
 import bibtexparser
 from bibtexparser.bparser import BibTexParser
 
@@ -5,6 +9,11 @@ from .customization import *
 
 
 def customizations(record):
+    """
+    加载自定义的内容
+    :param record:
+    :return:
+    """
     record = author(record)
     record = title(record)
     record = unique_id(record)

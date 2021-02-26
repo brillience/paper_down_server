@@ -8,8 +8,15 @@ import re
 
 
 class WosSpiderSpider(scrapy.Spider):
+    """
+    文献下载爬虫
+    """
     name = 'wos_spider'
     def start_requests(self):
+        """
+        1、拿到代理IP
+        2、发起请求
+        """
         self.engine = get_engine()
         self.session = get_session(engine=self.engine)
         # 获取scihub资源链接
@@ -24,6 +31,11 @@ class WosSpiderSpider(scrapy.Spider):
             pass
 
     def parse(self, response):
+        """
+        解析目标url，将信息写入item字典，传给pipline
+        :param response:
+        :return:
+        """
         detail_url_list = response.xpath('//*[@id="buttons"]/ul/li[2]/a/@onclick')
         if len(detail_url_list) > 0:
             target = detail_url_list.extract_first()

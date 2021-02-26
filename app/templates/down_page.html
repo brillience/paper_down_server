@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+{#  弹窗  #}
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -38,6 +39,7 @@
         </li>
     </ul>
     <div id="succ_papers">
+    {#  本地已经录入的文献信息  #}
         <table class="table table-bordered table-hover table-condense"
                data-toggle="table"
                data-classes="table table-hover"
@@ -58,7 +60,7 @@
             </thead>
             <tbody>
             {% for paper in papers_dic_succ_list %}
-            <tr>
+            <tr class="succ_tr">
                 <td class="file_name">{{ paper['file_name'] }}</td>
                 <td>{{ paper['title'] }}</td>
                 <td class="text-lowercase">{{ paper['journal'] }}</td>
@@ -74,7 +76,7 @@
     </div>
 
     <div id="err_papers">
-
+    {#  本地暂未录入的文献信息  #}
         <table class="table table-bordered table-hover table-condense" id="err_paper_table"
                data-toggle="table"
                data-classes="table table-hover"
@@ -105,7 +107,7 @@
         </table>
 
     </div>
-
+    {#  将本地存在的文献信息，写入form表单，用于后台打包下载  #}
     <form action="/downloadall" method="POST" style="display: none">
         {% for paper in papers_dic_succ_list %}
         <input type="text" name="ids" value="{{ paper['file_name'] }}">
@@ -118,17 +120,24 @@
 {% block scripts %}
 <script>
     $(document).ready(function () {
+        {#先显示成功的表格 同时若成功检索的文献本地都没有，则给出用户提示#}
         $('#err_papers').hide();
         $('#down_li').show();
         $('#down_err').hide();
+        var succ_nums = document.getElementsByClassName("succ_tr").length;
+        if(succ_nums<1){
+          alert('抱歉！当前文献暂未录入！后台已存入当前检索结果！请于4小时后，再试！');
+        };
     });
     $('#but_succ').on('click', function (event) {
+        {#显示成功的表格，同时隐藏错误的表格#}
         $('#succ_papers').show();
         $('#err_papers').hide();
         $('#down_li').show();
         $('#down_err').hide();
     });
     $('#but_err').on('click', function (event) {
+        {#显示错误表格，同时隐藏成功的表格#}
         $('#succ_papers').hide();
         $('#err_papers').show();
         $('#down_li').hide();
@@ -136,12 +145,13 @@
     });
 
     function down_all() {
+        {#弹窗提示，同时向后台发送表单，用于打包#}
         $('#myModal').modal('show');
         $('#button_down_all').click();
     }
     function export_err() {
+        {#导出本地没有的文献的信息#}
         $('#err_paper_table').tableExport({type:'csv'});
     }
-
 </script>
 {% endblock %}
